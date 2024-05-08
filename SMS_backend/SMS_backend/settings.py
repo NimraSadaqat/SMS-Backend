@@ -35,6 +35,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'academic_year',
+    'fees',
     'students',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,10 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -57,6 +61,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'SMS_backend.urls'
+
+CORS_ORIGIN_ALLOW_ALL = True   
 
 TEMPLATES = [
     {
