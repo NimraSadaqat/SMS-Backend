@@ -50,4 +50,4 @@ class Academic_Year(models.Model):
     )
 
     def __str__(self):
-        return f"{self.start_date}-{self.end_date}: {self.grade}"
+        return f"{self.start_date.year}-{self.end_date.year}: {self.grade}"

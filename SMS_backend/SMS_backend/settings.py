@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'academic_year',
     'fees',
     'students',
+    'employees',
+    'finance',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

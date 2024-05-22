@@ -7,15 +7,15 @@ from rest_framework.status import (
 )
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
-from .models import Student, FamilyInformation
-from .serializers import StudentSerializer, FamilyInformationSerializer
+from .models import Fees, StudentFee, FeeReceipt
+from .serializers import FeesSerializer, StudentFeeSerializer, FeeReceiptSerializer
 
-class FamilyInformationAPI(APIView):
+class FeesAPI(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        queryset = FamilyInformation.objects.all()
-        serializer = FamilyInformationSerializer(queryset, many=True)
+        queryset = Fees.objects.all()
+        serializer = FeesSerializer(queryset, many=True)
         return Response({
             "success": True, "data": serializer.data, "message": ""
         }, status=HTTP_200_OK
@@ -24,7 +24,7 @@ class FamilyInformationAPI(APIView):
     def post(self, request, format=None):
         data = request.data
 
-        serializer = FamilyInformationSerializer(data=request.data)
+        serializer = FeesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({
@@ -37,15 +37,15 @@ class FamilyInformationAPI(APIView):
             }, status=HTTP_406_NOT_ACCEPTABLE
             )
 
-class FamilyInformationDetailAPI(APIView):
+class FeesDetailAPI(APIView):
     """
-    Retrieve, update or delete a FamilyInformation instance.
+    Retrieve, update or delete a Fees instance.
     """
     permission_classes = (AllowAny,)
 
     def get(self, request, pk, format=None):
-        familyInformation = get_object_or_404(FamilyInformation, pk=pk)
-        serializer = FamilyInformationSerializer(familyInformation)
+        fees = get_object_or_404(Fees, pk=pk)
+        serializer = FeesSerializer(fees)
         return Response({
             'success': True,
             'data': serializer.data,
@@ -53,8 +53,8 @@ class FamilyInformationDetailAPI(APIView):
         }, status=HTTP_200_OK)
 
     def put(self, request, pk, format=None):
-        familyInformation = get_object_or_404(FamilyInformation, pk=pk)
-        serializer = FamilyInformationSerializer(familyInformation, data=request.data)
+        fees = get_object_or_404(Fees, pk=pk)
+        serializer = FeesSerializer(fees, data=request.data)
 
         if serializer.is_valid():
             # print(serializer.validated_data)
@@ -73,14 +73,13 @@ class FamilyInformationDetailAPI(APIView):
             'success': False, "data": None, 'message': _("Method 'DELETE' not allowed")
         }, status=HTTP_405_METHOD_NOT_ALLOWED
         )
-
-
-class StudentAPI(APIView):
+    
+class StudentFeeAPI(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        queryset = Student.objects.all()
-        serializer = StudentSerializer(queryset, many=True)
+        queryset = StudentFee.objects.all()
+        serializer = StudentFeeSerializer(queryset, many=True)
         return Response({
             "success": True, "data": serializer.data, "message": ""
         }, status=HTTP_200_OK
@@ -89,7 +88,7 @@ class StudentAPI(APIView):
     def post(self, request, format=None):
         data = request.data
 
-        serializer = StudentSerializer(data=request.data)
+        serializer = StudentFeeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({
@@ -102,15 +101,15 @@ class StudentAPI(APIView):
             }, status=HTTP_406_NOT_ACCEPTABLE
             )
 
-class StudentDetailAPI(APIView):
+class StudentFeeDetailAPI(APIView):
     """
-    Retrieve, update or delete a Student instance.
+    Retrieve, update or delete a StudentFee instance.
     """
     permission_classes = (AllowAny,)
 
     def get(self, request, pk, format=None):
-        student = get_object_or_404(Student, pk=pk)
-        serializer = StudentSerializer(student)
+        studentFee = get_object_or_404(StudentFee, pk=pk)
+        serializer = StudentFeeSerializer(studentFee)
         return Response({
             'success': True,
             'data': serializer.data,
@@ -118,8 +117,72 @@ class StudentDetailAPI(APIView):
         }, status=HTTP_200_OK)
 
     def put(self, request, pk, format=None):
-        student = get_object_or_404(Student, pk=pk)
-        serializer = StudentSerializer(student, data=request.data)
+        studentFee = get_object_or_404(StudentFee, pk=pk)
+        serializer = StudentFeeSerializer(studentFee, data=request.data)
+
+        if serializer.is_valid():
+            # print(serializer.validated_data)
+            serializer.save()
+            return Response({
+                'success': True, 'data': serializer.data, 'message': _('Updated')
+            }, status=HTTP_200_OK)
+        else:
+            return Response({
+                'success': False, "data": serializer.errors, 'message': _('Could not update')
+            }, status=HTTP_406_NOT_ACCEPTABLE
+            )
+
+    def delete(self, request, pk, format=None):
+        return Response({
+            'success': False, "data": None, 'message': _("Method 'DELETE' not allowed")
+        }, status=HTTP_405_METHOD_NOT_ALLOWED
+        )
+    
+class FeeReceiptAPI(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        queryset = FeeReceipt.objects.all()
+        serializer = FeeReceiptSerializer(queryset, many=True)
+        return Response({
+            "success": True, "data": serializer.data, "message": ""
+        }, status=HTTP_200_OK
+        )
+
+    def post(self, request, format=None):
+        data = request.data
+
+        serializer = FeeReceiptSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'success': True, "data": data, 'message': _('Saved')
+            }, status=HTTP_201_CREATED
+            )
+        else:
+            return Response({
+                'success': False, "data": serializer.errors, 'message': _('Could not save')
+            }, status=HTTP_406_NOT_ACCEPTABLE
+            )
+
+class FeeReceiptDetailAPI(APIView):
+    """
+    Retrieve, update or delete a FeeReceipt instance.
+    """
+    permission_classes = (AllowAny,)
+
+    def get(self, request, pk, format=None):
+        feeReceipt = get_object_or_404(FeeReceipt, pk=pk)
+        serializer = FeeReceiptSerializer(feeReceipt)
+        return Response({
+            'success': True,
+            'data': serializer.data,
+            'message': ""
+        }, status=HTTP_200_OK)
+
+    def put(self, request, pk, format=None):
+        feeReceipt = get_object_or_404(FeeReceipt, pk=pk)
+        serializer = FeeReceiptSerializer(feeReceipt, data=request.data)
 
         if serializer.is_valid():
             # print(serializer.validated_data)

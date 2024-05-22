@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.utils.translation import gettext_lazy as _
 from academic_year.models import Academic_Year
 
 # Create your models here.
@@ -166,31 +165,45 @@ class Student(models.Model):
         choices = Section.choices,
         default = Section.A
     )
-    roll_number = models.CharField(max_length=5)
+    roll_number = models.CharField(
+        max_length=5,
+        null=True, 
+        blank=True
+    )
     remarks = models.TextField(
         null=True, 
         blank=True
     )
     monthly_fees = models.IntegerField(
         validators=[MinValueValidator(0), 
-                     MaxValueValidator(10000)]
+                     MaxValueValidator(10000)],
+        null=True, 
+        blank=True
     )
     admission_fees = models.IntegerField(
         validators=[MinValueValidator(0), 
-                     MaxValueValidator(10000)]
+                     MaxValueValidator(10000)],
+        null=True, 
+        blank=True
     )
     examination_fees = models.IntegerField(
         validators=[MinValueValidator(0), 
-                     MaxValueValidator(10000)]
+                     MaxValueValidator(10000)],
+        null=True, 
+        blank=True
     )
     board_fees = models.IntegerField(
         validators=[MinValueValidator(0), 
-                     MaxValueValidator(10000)]
+                     MaxValueValidator(10000)],
+        null=True, 
+        blank=True
     )
 
     practical_fees = models.IntegerField(
         validators=[MinValueValidator(0), 
-                     MaxValueValidator(10000)]
+                     MaxValueValidator(10000)],
+        null=True, 
+        blank=True
     )
     last_updated = models.DateField(auto_now=True)    
     
@@ -198,19 +211,22 @@ class Student(models.Model):
         return f"{self.name}"
 
     def save(self, *args, **kwargs):
-        if not self.monthly_fees:
-            self.monthly_fees = self.academic_year.monthly_fees
+        if not self.pk:  # If the object is being created (not updated)
+            total_students = Student.objects.count()
+            self.roll_number = total_students + 1
+            if self.monthly_fees is None or self.monthly_fees == '':
+                self.monthly_fees = self.academic_year.monthly_fees
 
-        if not self.admission_fees:
-            self.admission_fees = self.academic_year.admission_fees
+            if self.admission_fees is None or self.admission_fees == '':
+                self.admission_fees = self.academic_year.admission_fees
 
-        if not self.examination_fees:
-            self.examination_fees = self.academic_year.examination_fees
+            if self.examination_fees is None or self.examination_fees == '':
+                self.examination_fees = self.academic_year.examination_fees
 
-        if not self.board_fees:
-            self.board_fees = self.academic_year.board_fees
+            if self.board_fees is None or self.board_fees == '':
+                self.board_fees = self.academic_year.board_fees
 
-        if not self.practical_fees:
-            self.practical_fees = self.academic_year.practical_fees
+            if self.practical_fees is None or self.practical_fees == '':
+                self.practical_fees = self.academic_year.practical_fees
 
         super().save(*args, **kwargs)

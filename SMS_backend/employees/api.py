@@ -7,15 +7,15 @@ from rest_framework.status import (
 )
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
-from .models import Student, FamilyInformation
-from .serializers import StudentSerializer, FamilyInformationSerializer
+from .models import EmployeeInformation, Salary
+from .serializers import EmployeeInformationSerializer, SalarySerializer
 
-class FamilyInformationAPI(APIView):
+class EmployeeInformationAPI(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        queryset = FamilyInformation.objects.all()
-        serializer = FamilyInformationSerializer(queryset, many=True)
+        queryset = EmployeeInformation.objects.all()
+        serializer = EmployeeInformationSerializer(queryset, many=True)
         return Response({
             "success": True, "data": serializer.data, "message": ""
         }, status=HTTP_200_OK
@@ -24,7 +24,7 @@ class FamilyInformationAPI(APIView):
     def post(self, request, format=None):
         data = request.data
 
-        serializer = FamilyInformationSerializer(data=request.data)
+        serializer = EmployeeInformationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({
@@ -37,15 +37,15 @@ class FamilyInformationAPI(APIView):
             }, status=HTTP_406_NOT_ACCEPTABLE
             )
 
-class FamilyInformationDetailAPI(APIView):
+class EmployeeInformationDetailAPI(APIView):
     """
-    Retrieve, update or delete a FamilyInformation instance.
+    Retrieve, update or delete a EmployeeInformation instance.
     """
     permission_classes = (AllowAny,)
 
     def get(self, request, pk, format=None):
-        familyInformation = get_object_or_404(FamilyInformation, pk=pk)
-        serializer = FamilyInformationSerializer(familyInformation)
+        employeeInformation = get_object_or_404(EmployeeInformation, pk=pk)
+        serializer = EmployeeInformationSerializer(employeeInformation)
         return Response({
             'success': True,
             'data': serializer.data,
@@ -53,8 +53,8 @@ class FamilyInformationDetailAPI(APIView):
         }, status=HTTP_200_OK)
 
     def put(self, request, pk, format=None):
-        familyInformation = get_object_or_404(FamilyInformation, pk=pk)
-        serializer = FamilyInformationSerializer(familyInformation, data=request.data)
+        employeeInformation = get_object_or_404(EmployeeInformation, pk=pk)
+        serializer = EmployeeInformationSerializer(employeeInformation, data=request.data)
 
         if serializer.is_valid():
             # print(serializer.validated_data)
@@ -73,14 +73,13 @@ class FamilyInformationDetailAPI(APIView):
             'success': False, "data": None, 'message': _("Method 'DELETE' not allowed")
         }, status=HTTP_405_METHOD_NOT_ALLOWED
         )
-
-
-class StudentAPI(APIView):
+    
+class SalaryAPI(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        queryset = Student.objects.all()
-        serializer = StudentSerializer(queryset, many=True)
+        queryset = Salary.objects.all()
+        serializer = SalarySerializer(queryset, many=True)
         return Response({
             "success": True, "data": serializer.data, "message": ""
         }, status=HTTP_200_OK
@@ -89,7 +88,7 @@ class StudentAPI(APIView):
     def post(self, request, format=None):
         data = request.data
 
-        serializer = StudentSerializer(data=request.data)
+        serializer = SalarySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({
@@ -102,15 +101,15 @@ class StudentAPI(APIView):
             }, status=HTTP_406_NOT_ACCEPTABLE
             )
 
-class StudentDetailAPI(APIView):
+class SalaryDetailAPI(APIView):
     """
-    Retrieve, update or delete a Student instance.
+    Retrieve, update or delete a Salary instance.
     """
     permission_classes = (AllowAny,)
 
     def get(self, request, pk, format=None):
-        student = get_object_or_404(Student, pk=pk)
-        serializer = StudentSerializer(student)
+        salary = get_object_or_404(Salary, pk=pk)
+        serializer = SalarySerializer(salary)
         return Response({
             'success': True,
             'data': serializer.data,
@@ -118,8 +117,8 @@ class StudentDetailAPI(APIView):
         }, status=HTTP_200_OK)
 
     def put(self, request, pk, format=None):
-        student = get_object_or_404(Student, pk=pk)
-        serializer = StudentSerializer(student, data=request.data)
+        salary = get_object_or_404(Salary, pk=pk)
+        serializer = SalarySerializer(salary, data=request.data)
 
         if serializer.is_valid():
             # print(serializer.validated_data)
