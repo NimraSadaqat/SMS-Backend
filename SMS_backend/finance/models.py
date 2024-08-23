@@ -6,7 +6,8 @@ class Expenses(models.Model):
     description = models.CharField(max_length=100)
     amount = models.IntegerField(
         validators=[MinValueValidator(0), 
-                     MaxValueValidator(1000000)]
+                     MaxValueValidator(1000000)],
+        default = 0
     )
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
@@ -15,7 +16,13 @@ class Expenses(models.Model):
 class MonthlyIncome(models.Model):
     amount = models.IntegerField(
         validators=[MinValueValidator(0), 
-                     MaxValueValidator(100000000)]
+                     MaxValueValidator(100000000)],
+        default = 0
+    )
+    discount = models.IntegerField(
+        validators=[MinValueValidator(0), 
+                     MaxValueValidator(100)],
+        default = 0
     )
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
@@ -23,7 +30,8 @@ class MonthlyIncome(models.Model):
 class Default(models.Model):
     amount = models.IntegerField(
         validators=[MinValueValidator(0), 
-                     MaxValueValidator(100000000)]
+                     MaxValueValidator(100000000)],
+        default = 0
     )
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)

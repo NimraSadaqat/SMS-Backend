@@ -2,6 +2,7 @@ from django.db import models, transaction
 from django.core.validators import MinValueValidator, MaxValueValidator
 from academic_year.models import Academic_Year
 from students.models import Student
+from finance.models import Default, MonthlyIncome
 
 # Create your models here.
 class Fees(models.Model):
@@ -53,8 +54,10 @@ class Fees(models.Model):
                 self.amount = self.academic_year.practical_fees
             elif self.type == 'Oth':
                 self.amount = self.other_charges
+            else:
+                self.amount = 0
         super().save(*args, **kwargs)
-    
+
 class StudentFee(models.Model):
     class Status(models.TextChoices):
         PAID = 'paid', 'Paid'
@@ -84,7 +87,7 @@ class StudentFee(models.Model):
     )
 
     def __str__(self):
-        return f"{self.id}-{self.student.name}:{self.dues_remaining}"
+        return f"{self.student.academic_year}-{self.student.name}:{self.dues_remaining}"
 
 class FeeReceipt(models.Model):
     student_fees = models.ManyToManyField(StudentFee, through='StudentFeeReceipt')
@@ -103,40 +106,6 @@ class FeeReceipt(models.Model):
     )
     generated = models.BooleanField(default = False)
 
-    def save(self, *args, **kwargs):
-        # if not self.pk:  # If the object is being created (not updated)
-            super().save(*args, **kwargs)
-            amount_paid = self.amount_paid
-            receipt = FeeReceipt.objects.last()
-            print('receipt:', receipt)
-            # receipt = FeeReceipt.objects.first()
-            student_fees = StudentFeeReceipt.objects.all()  # Get PKs of related tags
-            print('student_fees: ',student_fees)
-            # for student_fee in student_fees:
-            #     print(student_fee.dues_remaining)
-            #     if amount_paid >= student_fee.dues_remaining:
-            #         print('in loop1')
-            #         print(amount_paid ,' >= ', student_fee.dues_remaining)
-            #         amount_paid -= student_fee.dues_remaining
-            #         print('amount paid remaining: ',amount_paid)
-            #         StudentFee.objects.filter(pk = student_fee.pk).update(
-            #             paid_amount = student_fee.dues_remaining,
-            #             dues_remaining = 0,
-            #             status = 'paid'
-            #         )
-            #     elif amount_paid < student_fee.dues_remaining:
-            #         print('in loop2')
-            #         print(amount_paid ,' < ', student_fee.dues_remaining)
-            #         student_fee.dues_remaining = student_fee.dues_remaining - amount_paid
-            #         print('amount paid remaining: ', amount_paid)
-            #         print('student fee remaining: ',student_fee.dues_remaining)
-            #         update_student_fee = StudentFee.objects.filter(id = student_fee.id)
-            #         update_student_fee.update(
-            #             paid_amount = amount_paid,
-            #             dues_remaining = student_fee.dues_remaining
-            #         )
-            super().save(*args, **kwargs)
-        
 class StudentFeeReceipt(models.Model):
     receipt = models.ForeignKey(
         FeeReceipt, 
@@ -146,12 +115,3 @@ class StudentFeeReceipt(models.Model):
         StudentFee,
         on_delete = models.CASCADE
     )
-
-    @transaction.atomic
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.custom_function()
-
-    def custom_function(self):
-        # Your custom function logic here
-        pass

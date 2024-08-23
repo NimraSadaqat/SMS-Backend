@@ -15,7 +15,7 @@ class FamilyInformation(models.Model):
     ]
     
     father_name = models.CharField(max_length=100)
-    father_nic_number = models.CharField(max_length=15)
+    father_nic_number = models.CharField(max_length=13)
     father_occupation = models.CharField(max_length=100)
     father_monthly_income = models.IntegerField(
          validators=[MinValueValidator(1000), 
@@ -23,14 +23,14 @@ class FamilyInformation(models.Model):
     )
     father_qualification = models.CharField(max_length=100)
     father_address = models.TextField()
-    father_cell_number = models.CharField(max_length=12)
+    father_cell_number = models.CharField(max_length=15)
     status = models.CharField(
         max_length = 7,
         choices = FamilyStatus,
         default = CURRENT
     )
     father_phone_number = models.CharField(
-         max_length=12, 
+         max_length=15, 
          null=True, 
          blank=True
     )
@@ -43,12 +43,12 @@ class FamilyInformation(models.Model):
          blank=True
     )
     father_office_number = models.CharField(
-         max_length=12, 
+         max_length=15, 
          null=True, 
          blank=True
     )
     mother_name = models.CharField(max_length=100)
-    mother_nic_number = models.CharField(max_length=15)
+    mother_nic_number = models.CharField(max_length=13)
     mother_occupation = models.CharField(
          max_length=100,
          null=True, 
@@ -70,12 +70,12 @@ class FamilyInformation(models.Model):
          blank=True
     )
     mother_phone_number = models.CharField(
-         max_length=12, 
+         max_length=15, 
          null=True, 
          blank=True
     )
     mother_cell_number = models.CharField(
-         max_length=12,
+         max_length=15,
          null=True, 
          blank=True
     )
@@ -138,7 +138,7 @@ class Student(models.Model):
     religion = models.CharField(max_length=50)
     nationality = models.CharField(max_length=100)
     b_form_number = models.CharField(
-        max_length=15,
+        max_length=13,
         null=True, 
         blank=True
     )
